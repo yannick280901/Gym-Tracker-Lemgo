@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trainingsverlauf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        select, input[type="date"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .link-button {
+            background-color: #007bff;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            margin-top: 30px;
+        }
+
+        .link-button:hover {
+            background-color: #0056b3;
+        }
+
+        form.delete-form {
+            margin: 0;
+        }
+
+        button.delete {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.delete:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <h1>📈 Trainingsverlauf</h1>
+
+    <form method="get" action="/verlauf">
+        <label>Übung:</label><br>
+        <select name="uebung">
+            {% for u in uebungen %}
+                <option value="{{ u }}" {% if u == ausgewaehlt %}selected{% endif %}>{{ u }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Von Datum:</label><br>
+        <input type="date" name="von" value="{{ von }}"><br>
+
+        <label>Bis Datum:</label><br>
+        <input type="date" name="bis" value="{{ bis }}"><br>
+
+        <button type="submit">Filtern</button>
+    </form>
+
+    <canvas id="chart" width="400" height="200"></canvas>
+
+    <table>
+        <tr>
+            <th>Datum</th>
+            <th>Übung</th>
+            <th>Gewicht (kg)</th>
+            <th>Wdh</th>
+            <th>Löschen</th>
+        </tr>
+        {% for eintrag in daten %}
+        <tr>
+            <td>{{ eintrag.datum }}</td>
+            <td>{{ eintrag.uebung }}</td>
+            <td>{{ eintrag.gewicht }}</td>
+            <td>{{ eintrag.wdh }}</td>
+            <td>
+                <form method="post" action="/loeschen/{{ loop.index0 }}" class="delete-form" onsubmit="return confirm('Wirklich löschen?');">
+                    <button class="delete">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/" class="link-button">🔙 Zur Eingabe</a>
+    <a href="/logout" class="link-button" style="background-color: darkred;">🔒 Abmelden</a>
+
+    <script>
+        const daten = {{ daten | tojson }};
+        const labels = daten.map(e => e.datum).reverse();
+        const werte = daten.map(e => parseFloat(e.gewicht)).reverse();
+
+        const ctx = document.getElementById('chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Gewicht (kg)',
+                    data: werte,
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40,167,69,0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
