@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gym Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #c3e6cb;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .link-button {
+            background-color: #007bff;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .link-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏋️ Gym Tracker</h1>
+
+    {% if saved %}
+        <div class="success">✅ Gespeichert!</div>
+    {% endif %}
+
+    <form method="post">
+        <label>Übung:</label>
+        <select name="uebung" required>
+            {% for u in uebungen %}
+                <option value="{{ u }}">{{ u }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Gewicht (kg):</label>
+        <input type="number" name="gewicht" required>
+
+        <label>Wiederholungen:</label>
+        <input type="number" name="wdh" required>
+
+        <button type="submit">💾 Speichern</button>
+    </form>
+
+    <a href="/verlauf" class="link-button">📊 Zum Verlauf</a>
+    <a href="/logout" class="link-button" style="background-color: darkred;">🔒 Abmelden</a>
+</body>
+</html>
