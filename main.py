@@ -40,9 +40,9 @@ def index():
         return redirect(url_for("index", saved="1"))
 
     uebungen = [
-        "Bankdrücken", "Bauch", "Bizeps (EGYM)", "Bizeps Hantel",
+        "Bankdrücken", "Bauch", "Bizeps (EGYM)","Beinbeuger","Hackenschmidt", "Bizeps Hantel",
         "Brustpresse", "Brustpresse (EGYM)", "Brustpresse schräg", "Butterfly",
-        "Butterfly Schulter", "Lastzug (EGYM)", "Rudern", "Rudern EGYM",
+        "Reverse Butterfly", "Lastzug (EGYM)", "Rudern", "Rudern EGYM",
         "Schulterdrücken (EGYM)", "Trizeps", "Trizeps EGYM", "Unterer Rücken"
     ]
     saved = request.args.get("saved") == "1"
